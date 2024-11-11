@@ -3,6 +3,7 @@ import sys
 import loader
 import menu
 import util
+import json
 
 from colorama import Fore, Back, Style
 
@@ -21,10 +22,14 @@ gameState = {
 }
 
 seasons = ["Spring", "Summer", "Autumn", "Winter"]
+gameRunning = True
 
 def newGame():
     global gameState
     util.clear() 
+
+    with open(loader.ASSET_DIR + "default.json", "r") as f:
+        gameState = json.loads(f.read())
 
     with open(loader.ASSET_DIR + "newgame-splash.txt", "r") as f:
         print(f.read())
@@ -52,19 +57,75 @@ def newGame():
 
     gameMenu()
 
+def loadGame():
+    global gameState
+    util.clear()
+
+    with open(loader.ASSET_DIR + "loadgame-splash.txt", "r") as f:
+        print(f.read())
+
+    print()
+
+    files = [f for f in os.listdir(loader.SAVE_DIR) if os.path.isfile(os.path.join(loader.SAVE_DIR, f))]
+
+    for index, f in enumerate(files):
+        print(f"{index + 1} | {f}")
+
+
+    option = ""
+    validChoice = False
+
+    while not validChoice:
+        option = input("> ")
+
+        try: int(option)
+        except:
+            print(f"Please enter a number within the range 1 - {len(files)}")
+            continue
+
+        if int(option) not in range(1, len(files) + 1):
+            print(f"Please enter a number within the range 1 - {len(files)}")
+            continue
+
+        validChoice = True
+
+    with open(loader.SAVE_DIR + files[int(option) - 1], "r") as f:
+        gameState = json.loads(f.read())
+
+    gameMenu()
+
 def printGameHeader():
     global gameState
 
     print(f"---- {str(gameState['day']).rjust(2, '0')} {seasons[gameState['season']]}, {gameState['year']} ----")
     print(f"Survivors: {gameState['numSurvivors']}")
-    print(f"Food:      {int(gameState['foodUnits'] / (FOOD_UNITS_PER_SURVIVOR * gameState['numSurvivors']))} Days remaining.")
-    print(f"Water:     {int(gameState['foodUnits'] / (DRNK_UNITS_PER_SURVIVOR * gameState['numSurvivors']))} Days remaining.")
+    print(f"Food:      ~{int(gameState['foodUnits'] / (FOOD_UNITS_PER_SURVIVOR * gameState['numSurvivors']))} Days remaining.")
+    print(f"Water:     ~{int(gameState['foodUnits'] / (DRNK_UNITS_PER_SURVIVOR * gameState['numSurvivors']))} Days remaining.")
+
+def saveGame():
+    gameName = input("Give your save a name: ")
+
+    with open(loader.SAVE_DIR + gameName + '.json', "w") as f:
+        f.write( json.dumps(gameState) )
+
+def mainMenu():
+    global gameRunning
+
+    gameRunning = False
 
 def gameMenu():
     global gameState
-    while True:
+    global gameRunning
+    while gameRunning:
         util.clear()
         printGameHeader()
-
         print()
-        input()
+
+        gameMenu = menu.Menu([
+            ("Save Game", saveGame),
+            ("Main Menu", mainMenu),
+        ])
+
+        gameMenu.menuSelect()
+
+    gameRunning = True

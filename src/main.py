@@ -11,6 +11,7 @@ def mainmenu():
 
     mainMenu = menu.Menu([
         ("New Game", game.newGame),
+        ("Load Game", game.loadGame),
         ("Quit", quit)
     ])
 
@@ -18,4 +19,5 @@ def mainmenu():
 
 
 if __name__ == "__main__":
-    mainmenu()
+    while True:
+        mainmenu()
