@@ -1,10 +1,35 @@
 {
     "refugeName": "New Refuge",
-    "numSurvivors": 50,
-    "foodUnits": 500,
-    "waterUnits": 500,
+    "numSurvivors": 15,
+    "numAssigned": 6,
+    "foodUnits": 75,
+    "waterUnits": 75,
+
+    "isRaining": 0,
+    "rainCollectors": 4,
+
+    "numThirsty": 0,
+    "numVerThirsty": 0,
+    "numExtThirsty": 0,
+
+    "numHungry": 0,
+    "numPreHungry": 0,
+    "numVerHungry": 0,
+    "numExtVerHungry": 0,
+    "numExtHungry": 0,
+
+    "details": {
+        "Soldiers": 4,
+        "Scavengers": 0,
+        "Entertainers": 0,
+        "Researchers": 0,
+        "Chefs": 2
+    },
+
+    "missions": [],
     
-    "season": 1,
+    "season": 2,
     "day": 3,
     "year": 2045
 }
+
